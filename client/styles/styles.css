@@ -88,3 +88,31 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.search-bar{
+  width:30%;
+}
+.messages{
+  border:solid 1px black;
+  background-color:grey;
+}
+button{
+  margin-right: -440px;
+}
+.submit{
+  margin-left: -440px;
+}
+.userInfo:hover{
+  cursor:pointer;
+}
+.userInfo{
+  border:solid 1px black;
+  background-color: #eee;
+  border-bottom:none;
+  padding-top:5px;
+}
+.messageInfo{
+  background-color:#eee;
+  border: solid 1px black;
+  border-top:none;
+  padding-bottom: 10px;
+}
