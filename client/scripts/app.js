@@ -20,6 +20,8 @@ var app = {
     this.fetch();
     this.handleUsernameClick();
     this.handleSubmit();
+    this.createNewTab();
+    this.addRoom();
   },
 
   send: function(message) {
@@ -47,7 +49,7 @@ var app = {
       // This is the url you should use to communicate with the parse API server.
       url: app.server,
       type: 'GET',
-      data:'order=-createdAt',
+      data: 'order=-createdAt',
       success: function (data) {
         console.log('chatterbox: Message received');
         app.renderRoom(data);
@@ -64,7 +66,7 @@ var app = {
 
   clearMessages: function() {
     var clear = document.getElementById('chats');
-    while(clear.firstChild){
+    while (clear.firstChild) {
       clear.removeChild(clear.firstChild);
     }
   },
@@ -72,12 +74,12 @@ var app = {
   renderMessage: function(data, room) {
     app.clearMessages();
     var chat = $('#chats');
-    for(var m = 0; m < data.results.length; m++) {
-      if(data.results[m].roomname === room && data.results[m].username && data.results[m].text && !data.results[m].username.includes('%') && !data.results[m].text.includes('%')&& !data.results[m].username.includes('<script>') && !data.results[m].text.includes('<script>')) {
+    for (var m = 0; m < data.results.length; m++) {
+      if (data.results[m].roomname === room && data.results[m].username && data.results[m].text && !data.results[m].username.includes('%') && !data.results[m].text.includes('%') && !data.results[m].username.includes('<script>') && !data.results[m].text.includes('<script>')) {
         var userMessage = $('<div class="userMessage"></div>');
         var user;
-        if(app.friends.includes(app.safeData(data.results[m].username))) {
-          user = $('<div class="userInfo"><strong>' + app.safeData(data.results[m].username) + '</strong></div>')
+        if (app.friends.includes(app.safeData(data.results[m].username))) {
+          user = $('<div class="userInfo"><strong>' + app.safeData(data.results[m].username) + '</strong></div>');
         } else {
           user = $('<div class="userInfo">' + app.safeData(data.results[m].username) + '</div>');
         }
@@ -88,38 +90,54 @@ var app = {
       }
     }
   },
-
+  createNewTab: function(tabName) {
+    var selected = $('#select :selected').text();
+    $('#addToTab').on('click', function(){
+        window.open('file:///Users/alexhome/Desktop/hrla23-chatterbox-client/client/index.html?username=Alex', '_blank');
+    })
+  },
   renderRoom: function(data) {
     var allRooms = [];
-    var getRoom = $("#select");
+    var getRoom = $('#select');
     var room;
-    var selectKids = $('#select').children();
+    var selectChild = $('#select').children();
+
     var isRoomFound;
 
     for(var m = 0; m < data.results.length; m++) {
-      if(data.results[m].username && data.results[m].text && !data.results[m].username.includes('%') && !data.results[m].text.includes('%')&& !data.results[m].username.includes('<script>') && !data.results[m].text.includes('<script>')) {
+      if(data.results[m].username && data.results[m].text && !data.results[m].username.includes('%') && !data.results[m].text.includes('%') && !data.results[m].username.includes('<script>') && !data.results[m].text.includes('<script>')) {
         allRooms.push(app.safeData(data.results[m].roomname));
       }
     }
-    for(var r = 0; r < allRooms.length; r++) {
-      if(!app.rooms.includes(allRooms[r])) {
-        app.rooms.push(allRooms[r]);
+
+    allRooms.forEach((item)=>{
+      if(!app.rooms.includes(item)){
+        app.rooms.push(item);
       }
-    }
-    for(var r = 0; r < app.rooms.length; r++) {
-      isRoomFound = false;
-      for(var h = 0; h < selectKids.length; h++) {
-        if(selectKids[h] === app.rooms[r]) {
+    });
+
+    app.rooms.forEach((item)=>{
+      for (var h = 0; h < selectChild.length; h++){
+        if (selectChild[h] === item){
           isRoomFound = true;
         }
       }
-      if(isRoomFound || selectKids.length === 0) {
-        room = $('<option class="option" value="val">' + app.rooms[r] + '</option>');
+      if(isRoomFound || selectChild.length === 0) {
+        room = $('<option class="option" value="val">' + item + '</option>');
         getRoom.append(room);
       }
-    }
+    });
   },
-
+  addRoom: function() {
+    $('#addRoom').on('click', function(){
+      var newRoomName = $('#newRoom').val();
+      var newRoomOptionEl = document.createElement('option');
+      newRoomOptionEl.textContent = newRoomName;
+      $('#select').append(newRoomOptionEl);
+      app.rooms.push(newRoomName);
+      app.fetch();
+    })
+  },
   handleUsernameClick: function() {
     $(document).on('click','.userInfo', function(event){
       app.friends.push(event.target.textContent);
@@ -134,12 +152,12 @@ var app = {
         roomname: $('#select :selected').text(),
         text: input,
         username: app.user()
-      }
+      };
       $('#input').val('');
       app.send(message);
     });
   }
-}
+};
 $(document).ready(function(){
   app.init();
 });

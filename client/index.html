@@ -24,6 +24,8 @@
    <script src="scripts/app.js"></script>
  </head>
  <body>
+   <div id="tabs">
+   </div>
    <div id="main">
      <h1>chatterbox</h1>
      <div class="top">
@@ -35,13 +37,14 @@
            <option value="val1">also more</option>
            <option value="val1">some more</option>-->
          </select>
+         <button id="addToTab">Open new tab</button>
        </p>
        <div class="search-bar">
          <input type="text" id="input" class="st-default-search-input" style="width: 300px; height: 15px" placeholder="Your message here...">
          <button id="submit">Submit</button>
          <div>
            <input type="text" id="newRoom" placeholder="Add a new room">
-           <button type="add">Add</button>
+           <button id="addRoom" type="add">Add</button>
          </div>
        </div>
      </div>
